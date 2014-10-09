@@ -45,11 +45,6 @@ public class MessageController {
         return "redirect:/";
     }
 
-    @RequestMapping(params = "form", method = RequestMethod.GET)
-    public String createForm(@ModelAttribute Message message) {
-        return "messages/compose";
-    }
-
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView create(@Valid Message message, BindingResult result, RedirectAttributes redirect) {
         if (result.hasErrors()) {
