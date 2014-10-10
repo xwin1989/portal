@@ -6,6 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -18,6 +20,8 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
+
+import java.util.Arrays;
 
 /**
  * Created by Neal on 2014-09-28.
@@ -41,6 +45,13 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/resources/").setCachePeriod(31556926);
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    }
+
+    @Bean
+    public MappingJacksonHttpMessageConverter mappingJacksonHttpMessageConverter() {
+        MappingJacksonHttpMessageConverter mappingJacksonHttpMessageConverter = new MappingJacksonHttpMessageConverter();
+        mappingJacksonHttpMessageConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text/html;charset=UTF-8")));
+        return mappingJacksonHttpMessageConverter;
     }
 
     @Bean
