@@ -1,11 +1,13 @@
 package com.nx.config.security;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -18,12 +20,17 @@ import java.util.Map;
  */
 @Configuration
 public class SecurityConfiguration {
+
     @Bean
-    public DefaultSecurityManager securityManager() {
-        DefaultSecurityManager defaultSecurityManager = new DefaultSecurityManager();
-        defaultSecurityManager.setRealm(new ShiroDbRealm());
-        SecurityUtils.setSecurityManager(defaultSecurityManager);
-        return defaultSecurityManager;
+    public CustomSecurityRealm customSecurityRealm() {
+        return new CustomSecurityRealm();
+    }
+
+    @Bean
+    public WebSecurityManager securityManager(){
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setRealm(customSecurityRealm());
+        return securityManager;
     }
 
     @Bean
@@ -32,30 +39,24 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public MethodInvokingFactoryBean methodInvokingFactoryBean() {
+        MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
+        methodInvokingFactoryBean.setStaticMethod("org.apache.shiro.SecurityUtils.setSecurityManager");
+        methodInvokingFactoryBean.setArguments(new Object[]{securityManager()});
+        return methodInvokingFactoryBean;
+    }
+
+    @Bean
     @DependsOn("lifecycleBeanPostProcessor")
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
         return new DefaultAdvisorAutoProxyCreator();
     }
 
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(){
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
         return authorizationAttributeSourceAdvisor;
-    }
-
-    @Bean
-    public ShiroFilterFactoryBean shiroFilter() {
-        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
-        shiroFilter.setSecurityManager(securityManager());
-        shiroFilter.setLoginUrl("/login");
-        shiroFilter.setLoginUrl("/message");
-        shiroFilter.setUnauthorizedUrl("/error");
-        Map<String, String> filterChainDefinitionMap = new HashMap<>();
-        filterChainDefinitionMap.put("/login", "none");
-        filterChainDefinitionMap.put("/message/*", "authc");
-        shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        return shiroFilter;
     }
 
 }

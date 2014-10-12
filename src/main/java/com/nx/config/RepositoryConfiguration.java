@@ -2,6 +2,7 @@ package com.nx.config;
 
 import com.nx.domain.Message;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
@@ -21,6 +22,7 @@ import javax.sql.DataSource;
  * Created by Neal on 2014-09-28.
  */
 @Configuration
+@ComponentScan("com.nx.service")
 @EnableJpaRepositories("com.nx.repositories")
 public class RepositoryConfiguration {
 
