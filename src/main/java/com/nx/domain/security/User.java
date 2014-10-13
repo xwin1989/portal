@@ -1,10 +1,8 @@
 package com.nx.domain.security;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Neal on 10/9 009.
@@ -14,14 +12,22 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column
     private String name;
-
+    @Column
     private String password;
-
+    @Column
     private String salt;
-
+    @Column
     private boolean lock;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "role_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles;
 
     public Long getId() {
         return id;
@@ -61,5 +67,30 @@ public class User implements Serializable {
 
     public void setLock(boolean lock) {
         this.lock = lock;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        if (!id.equals(user.id)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

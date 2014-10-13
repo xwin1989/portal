@@ -13,40 +13,7 @@ import javax.servlet.ServletRegistration;
 /**
  * Created by Neal on 2014-09-28.
  */
-public class WebApplicationInitializer implements org.springframework.web.WebApplicationInitializer //extends AbstractAnnotationConfigDispatcherServletInitializer
-{
-//    @Override
-//    protected Class<?>[] getRootConfigClasses() {
-//        return new Class<?>[]{RootConfiguration.class};
-//    }
-//
-//    @Override
-//    protected Class<?>[] getServletConfigClasses() {
-//        return new Class<?>[]{WebMvcConfiguration.class};
-//    }
-//
-//    @Override
-//    protected String[] getServletMappings() {
-//        return new String[]{"/"};
-//    }
-//
-//    @Override
-//    protected Filter[] getServletFilters() {
-//        //OpenEntityManagerInViewFilter
-//
-//        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-//        characterEncodingFilter.setEncoding("UTF-8");
-//
-////        DelegatingFilterProxy shiroFilter = new DelegatingFilterProxy();
-////        shiroFilter.setTargetFilterLifecycle(true);
-//
-//        return new Filter[]{characterEncodingFilter};
-//    }
-//
-//    @Override
-//    public void onStartup(ServletContext servletContext) throws ServletException {
-//        super.onStartup(servletContext);
-//    }
+public class WebApplicationInitializer implements org.springframework.web.WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext container) throws ServletException {
@@ -57,21 +24,20 @@ public class WebApplicationInitializer implements org.springframework.web.WebApp
         // Manage the lifecycle of the root application context
         container.addListener(new ContextLoaderListener(rootContext));
 
-
         // Create the dispatcher servlet's Spring application context
         AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
         dispatcherContext.setServletContext(container);
         dispatcherContext.setParent(rootContext);
         dispatcherContext.register(WebMvcConfiguration.class);
 
-
         // Register and map the dispatcher servlet
         ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(dispatcherContext));
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
 
-
-        container.addFilter("shiroFilter", new DelegatingFilterProxy("shiroFilterBean", dispatcherContext))
-                .addMappingForUrlPatterns(null, false, "/*");
+        // Register shiro filter
+        DelegatingFilterProxy shiroFilter = new DelegatingFilterProxy("shiroFilterBean", dispatcherContext);
+        shiroFilter.setTargetFilterLifecycle(true);
+        container.addFilter("shiroFilter", shiroFilter).addMappingForUrlPatterns(null, false, "/*");
     }
 }

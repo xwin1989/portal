@@ -18,7 +18,6 @@ import java.util.Set;
  */
 public class CustomSecurityRealm extends AuthorizingRealm {
     private UserService userService;
-    private UserRepository userRepository;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -34,19 +33,20 @@ public class CustomSecurityRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        UsernamePasswordToken upat = (UsernamePasswordToken) token;
-        User user = userRepository.findByName(upat.getUsername());
-        if (user != null && user.getPassword().equals(new String(upat.getPassword()))) {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+
+        User user = null;
+        try {
+            user = userService.findByName(token.getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (user != null && user.getPassword().equals(new String(token.getPassword()))) {
             return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
         } else {
             throw new AuthenticationException("Invalid username/password combination!");
         }
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
     }
 
     @Autowired

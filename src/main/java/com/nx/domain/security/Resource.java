@@ -1,7 +1,7 @@
 package com.nx.domain.security;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Neal on 10/12 012.
@@ -11,17 +11,27 @@ public class Resource {
     @Id
     private Long id;
 
+    @Column
     private String name;
 
+    @Enumerated(value = EnumType.STRING)
     private ResourceType Type;
 
+    @Column
     private int priority;
 
-    private Resource parent;
-
+    @Column
     private String permission;
 
+    @Column
     private boolean available;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Resource parent;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    private List<Resource> children;
 
     public Long getId() {
         return id;
@@ -77,5 +87,13 @@ public class Resource {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public List<Resource> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Resource> children) {
+        this.children = children;
     }
 }

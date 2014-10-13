@@ -1,9 +1,7 @@
 package com.nx.domain.security;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Neal on 10/12 012.
@@ -14,13 +12,21 @@ public class Organization {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column
     private String name;
 
+    @Column
     private int priority;
 
+    @Column
+    private boolean available;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
     private Organization parent;
 
-    private boolean available;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    private List<Organization> children;
 
     public Long getId() {
         return id;
@@ -60,5 +66,13 @@ public class Organization {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public List<Organization> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Organization> children) {
+        this.children = children;
     }
 }

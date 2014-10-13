@@ -108,6 +108,7 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         definitionsMap.put("/**", "authc");
         shiroFilter.setFilterChainDefinitionMap(definitionsMap);
         shiroFilter.setLoginUrl("/login");
+        shiroFilter.setSuccessUrl("/message");
         shiroFilter.setSecurityManager(securityManager);
         return shiroFilter;
     }
