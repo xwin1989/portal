@@ -33,6 +33,9 @@ public class Resource {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     private List<Resource> children;
 
+    @ManyToMany(cascade = CascadeType.REFRESH, mappedBy = "resources")
+    private List<Role> roles;
+
     public Long getId() {
         return id;
     }
@@ -95,5 +98,30 @@ public class Resource {
 
     public void setChildren(List<Resource> children) {
         this.children = children;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Resource)) return false;
+
+        Resource resource = (Resource) o;
+
+        if (id != null ? !id.equals(resource.id) : resource.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

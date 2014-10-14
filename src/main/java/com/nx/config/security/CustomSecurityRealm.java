@@ -1,7 +1,6 @@
 package com.nx.config.security;
 
 import com.nx.domain.security.User;
-import com.nx.repositories.UserRepository;
 import com.nx.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -21,26 +20,27 @@ public class CustomSecurityRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-
         Set roles = new HashSet<>();
-        Set permissions = new HashSet<>();
+        Set<String> permissions = new HashSet<>();
         roles.add("admin");
         permissions.add("/message/*");
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roles);
-        info.setObjectPermissions(permissions);
+        info.setStringPermissions(permissions);
         return info;
     }
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-
-        User user = null;
+        User user;
         try {
             user = userService.findByName(token.getUsername());
+            if (user == null) {
+                throw new UnknownAccountException();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnknownAccountException();
         }
         if (user != null && user.getPassword().equals(new String(token.getPassword()))) {
             return new SimpleAuthenticationInfo(user, user.getPassword(), getName());

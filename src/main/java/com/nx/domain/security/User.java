@@ -18,12 +18,12 @@ public class User implements Serializable {
     private String password;
     @Column
     private String salt;
-    @Column
+    @Transient
     private boolean lock;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
-            name = "role_user",
+            name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
@@ -84,13 +84,13 @@ public class User implements Serializable {
 
         User user = (User) o;
 
-        if (!id.equals(user.id)) return false;
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 }
