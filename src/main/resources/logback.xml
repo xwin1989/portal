@@ -7,6 +7,10 @@
         </layout>
     </appender>
 
+    <logger name="com.nx.config.security.AccessFilter" level="INFO" additivity="false">
+        <appender-ref ref="stdout" />
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="stdout" />
     </root>

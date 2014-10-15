@@ -14,8 +14,9 @@ public class DefaultController {
 //    }
 
     @RequestMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
+
 }
 

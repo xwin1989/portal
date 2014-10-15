@@ -1,7 +1,5 @@
 package com.nx.config;
 
-import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.format.support.FormattingConversionService;
-import org.springframework.http.MediaType;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -23,10 +20,6 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Neal on 2014-09-28.
  */
@@ -36,8 +29,6 @@ import java.util.Map;
 public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     private boolean develop = true;
-    @Autowired
-    private WebSecurityManager securityManager;
 
     @Autowired
     private FormattingConversionService mvcConversionService;
@@ -97,20 +88,6 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         tilesConfigurer.setDefinitions(new String[]{"classpath:tiles/tiles-def.xml"});
         tilesConfigurer.setCheckRefresh(develop);
         return tilesConfigurer;
-    }
-
-    @Bean
-    public ShiroFilterFactoryBean shiroFilterBean(){
-        ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
-        Map<String, String> definitionsMap = new HashMap<>();
-        definitionsMap.put("/login", "authc");
-        definitionsMap.put("/message/**", "authc, roles[admin]");
-        definitionsMap.put("/**", "authc");
-        shiroFilter.setFilterChainDefinitionMap(definitionsMap);
-        shiroFilter.setLoginUrl("/login");
-        shiroFilter.setSuccessUrl("/message");
-        shiroFilter.setSecurityManager(securityManager);
-        return shiroFilter;
     }
 
     @Bean
