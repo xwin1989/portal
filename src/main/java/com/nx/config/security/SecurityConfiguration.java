@@ -1,6 +1,7 @@
 package com.nx.config.security;
 
 import org.apache.shiro.authc.credential.DefaultPasswordService;
+import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -36,6 +37,9 @@ public class SecurityConfiguration {
     public WebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(customSecurityRealm());
+        EnterpriseCacheSessionDAO cacheSessionDAO = new EnterpriseCacheSessionDAO();
+        cacheSessionDAO.setActiveSessionsCacheName("shiro-activeSessionCache");
+
         return securityManager;
     }
 
@@ -83,6 +87,7 @@ public class SecurityConfiguration {
         shiroFilter.setUnauthorizedUrl("/message");
         AccessFilter accessFilter = new AccessFilter();
         shiroFilter.getFilters().put("accessFilter", accessFilter);
+
         return shiroFilter;
     }
 }
