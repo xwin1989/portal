@@ -1,6 +1,7 @@
 package com.nx.config;
 
 import com.nx.config.security.SecurityConfiguration;
+import com.nx.config.web.SessionListener;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
@@ -39,5 +40,8 @@ public class WebApplicationInitializer implements org.springframework.web.WebApp
         DelegatingFilterProxy shiroFilter = new DelegatingFilterProxy("shiroFilterBean", dispatcherContext);
         shiroFilter.setTargetFilterLifecycle(true);
         container.addFilter("shiroFilter", shiroFilter).addMappingForUrlPatterns(null, false, "/*");
+
+        // Add other listener
+        container.addListener(new SessionListener());
     }
 }
