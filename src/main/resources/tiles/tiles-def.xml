@@ -19,4 +19,10 @@
         <put-attribute name="title" value="title/messages/login"/>
         <put-attribute name="head" value="head/messages/login"/>
     </definition>
+
+    <definition name="unauthorized" template="messages/layout">
+        <put-attribute name="content" value="content/messages/unauthorized"/>
+        <put-attribute name="title" value="title/messages/unauthorized"/>
+        <put-attribute name="head" value="head/messages/unauthorized"/>
+    </definition>
 </tiles-definitions>

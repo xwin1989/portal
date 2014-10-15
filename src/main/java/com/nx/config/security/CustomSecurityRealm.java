@@ -7,6 +7,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
@@ -24,6 +25,7 @@ public class CustomSecurityRealm extends AuthorizingRealm {
         Set<String> permissions = new HashSet<>();
         roles.add("admin");
         permissions.add("/message/*");
+
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roles);
         info.setStringPermissions(permissions);
@@ -43,7 +45,13 @@ public class CustomSecurityRealm extends AuthorizingRealm {
             throw new UnknownAccountException();
         }
         if (user != null && user.getPassword().equals(new String(token.getPassword()))) {
-            return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
+            SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
+                    user.getName(), //用户名
+                    user.getPassword(), //密码
+                    ByteSource.Util.bytes(user.getSalt()),//salt=username+salt
+                    getName()  //realm name
+            );
+            return authenticationInfo;
         } else {
             throw new AuthenticationException("Invalid username/password combination!");
         }

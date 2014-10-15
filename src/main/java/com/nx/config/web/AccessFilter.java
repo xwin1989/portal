@@ -1,4 +1,4 @@
-package com.nx.config.security;
+package com.nx.config.web;
 
 import org.apache.shiro.web.servlet.OncePerRequestFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -17,9 +17,10 @@ import java.io.IOException;
  */
 public class AccessFilter extends OncePerRequestFilter {
     private final Logger logger = LoggerFactory.getLogger(AccessFilter.class);
+
     @Override
     protected void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-        logger.info("Access Host#{}", WebUtils.getPathWithinApplication((HttpServletRequest) request));
+        logger.info("Access Host {}", WebUtils.getPathWithinApplication((HttpServletRequest) request));
         chain.doFilter(request, response);
     }
 }
