@@ -3,12 +3,17 @@ package com.nx.controller.message;
 /**
  * Created by Neal on 2014-10-08.
  */
+
 import com.nx.domain.Message;
 import com.nx.repositories.message.MessageRepository;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,14 +32,18 @@ public class MessageController {
         this.messageRepository = messageRepository;
     }
 
+    @RequiresRoles("neal")
     @RequestMapping
     public ModelAndView list() {
         Iterable<Message> messages = messageRepository.findAll();
         return new ModelAndView("messages/inbox", "messages", messages);
     }
 
+    @RequiresPermissions(logical = Logical.AND,value = "message")
     @RequestMapping("{id}")
-    public ModelAndView view(@PathVariable("id") Message message) {
+    public ModelAndView view(@PathVariable("id") Message message) throws UnauthenticatedException {
+        if (!SecurityUtils.getSubject().hasRole("user")) {
+        }
         return new ModelAndView("messages/show", "message", message);
     }
 

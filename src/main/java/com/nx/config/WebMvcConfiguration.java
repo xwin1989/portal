@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.Ordered;
 import org.springframework.data.repository.support.DomainClassConverter;
 import org.springframework.format.support.FormattingConversionService;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import org.thymeleaf.extras.tiles2.dialect.TilesDialect;
 import org.thymeleaf.extras.tiles2.spring4.web.configurer.ThymeleafTilesConfigurer;
 import org.thymeleaf.extras.tiles2.spring4.web.view.ThymeleafTilesView;
@@ -27,6 +29,7 @@ import org.thymeleaf.templateresolver.TemplateResolver;
 @Configurable
 @EnableWebMvc
 @ComponentScan("com.nx.controller")
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     private boolean develop = true;
@@ -34,10 +37,13 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     private FormattingConversionService mvcConversionService;
 
+
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/").setViewName("login");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        Math.floor(1.1);
     }
 
     @Override
@@ -90,6 +96,11 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         tilesConfigurer.setDefinitions(new String[]{"classpath:tiles/tiles-def.xml"});
         tilesConfigurer.setCheckRefresh(develop);
         return tilesConfigurer;
+    }
+
+    @Bean
+    public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver(){
+        return new ExceptionHandlerExceptionResolver();
     }
 
     @Bean

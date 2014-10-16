@@ -95,10 +95,9 @@
                                 <input type="submit" value="Log out"/>
                             </form>
 
-                            <p class="navbar-text pull-right" th:text="${#httpServletRequest.remoteUser}">
-                                sample_user
+                            <p class="navbar-text pull-right">
+                                <shiro:principal/>
                             </p>
-
                         </shiro:user>
                     </div>
                     <ul class="nav">

@@ -9,7 +9,6 @@ import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
@@ -81,7 +80,7 @@ public class SecurityConfiguration {
     @Bean
     public SessionValidationScheduler sessionValidationScheduler() {
         ExecutorServiceSessionValidationScheduler scheduler = new ExecutorServiceSessionValidationScheduler();
-        scheduler.setInterval(60000);//3600000
+        scheduler.setInterval(3600000);
         return scheduler;
     }
 
@@ -97,7 +96,7 @@ public class SecurityConfiguration {
         sessionManager.setSessionIdCookieEnabled(true);
         sessionManager.setSessionIdCookie(sessionIdCookie());
 
-        sessionManager.setGlobalSessionTimeout(30000);//1800000
+        sessionManager.setGlobalSessionTimeout(1800000);
         sessionManager.setDeleteInvalidSessions(true);
 
         ((ExecutorServiceSessionValidationScheduler)sessionManager.getSessionValidationScheduler()).setSessionManager(sessionManager);
@@ -129,7 +128,8 @@ public class SecurityConfiguration {
     @Bean
     @DependsOn("lifecycleBeanPostProcessor")
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        return new DefaultAdvisorAutoProxyCreator();
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        return defaultAdvisorAutoProxyCreator;
     }
 
     @Bean
