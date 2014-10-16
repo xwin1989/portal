@@ -1,5 +1,6 @@
 package com.nx.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -67,6 +68,7 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
         templateEngine.addDialect(new TilesDialect());
+        templateEngine.addDialect(new ShiroDialect());
         return templateEngine;
     }
 

@@ -46,8 +46,8 @@ public class CustomSecurityRealm extends AuthorizingRealm {
         }
         if (user != null && user.getPassword().equals(new String(token.getPassword()))) {
             SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                    user.getName(), //用户名
-                    user.getPassword(), //密码
+                    user.getName(),
+                    user.getPassword(),
                     ByteSource.Util.bytes(user.getSalt()),//salt=username+salt
                     getName()  //realm name
             );

@@ -1,5 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.thymeleaf.org">
 <head>
     <title tiles:include="title">SecureMail:</title>
     <link rel="icon" type="image/x-icon" th:href="@{/resources/img/favicon.ico}" href="../resources/img/favicon.ico"/>
@@ -84,13 +85,21 @@
                 <a class="brand" th:href="@{/}"><img th:src="@{/resources/img/logo.png}" alt="Spring Security Sample"/></a>
 
                 <div class="nav-collapse collapse">
-                    <div th:if="${#httpServletRequest.remoteUser != null}">
-                        <form class="navbar-form pull-right" th:action="@{/logout}" method="post">
-                            <input type="submit" value="Log out"/>
-                        </form>
-                        <p class="navbar-text pull-right" th:text="${#httpServletRequest.remoteUser}">
-                            sample_user
-                        </p>
+                    <div>
+                        <shiro:guest>
+                            <p class="navbar-text pull-right">Please <a th:href="@{'/login'}">Login</a></p>
+                        </shiro:guest>
+                        <shiro:user>
+
+                            <form class="navbar-form pull-right" th:action="@{/logout}" method="post">
+                                <input type="submit" value="Log out"/>
+                            </form>
+
+                            <p class="navbar-text pull-right" th:text="${#httpServletRequest.remoteUser}">
+                                sample_user
+                            </p>
+
+                        </shiro:user>
                     </div>
                     <ul class="nav">
                         <li><a th:href="@{/}">Inbox</a></li>
