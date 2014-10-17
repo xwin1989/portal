@@ -1,10 +1,12 @@
 package com.nx.config;
 
-import org.springframework.context.annotation.*;
+import com.alibaba.druid.pool.DruidDataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -26,8 +28,13 @@ public class RepositoryConfiguration {
 
     @Bean
     public DataSource dataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        return builder.setType(EmbeddedDatabaseType.HSQL).build();
+        DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setDriverClassName("org.hsqldb.jdbcDriver");
+        druidDataSource.setUrl("jdbc:hsqldb:mem:testDB");
+        druidDataSource.setUsername("sa");
+        return druidDataSource;
+//        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+//        return builder.setType(EmbeddedDatabaseType.HSQL).build();
     }
 
     @Bean
