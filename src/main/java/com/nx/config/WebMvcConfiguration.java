@@ -37,13 +37,10 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     private FormattingConversionService mvcConversionService;
 
-
-
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("login");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        Math.floor(1.1);
     }
 
     @Override
@@ -51,13 +48,6 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/resources/**").addResourceLocations("classpath:/resources/").setCachePeriod(31556926);
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
-
-//    @Bean
-//    public MappingJacksonHttpMessageConverter mappingJacksonHttpMessageConverter() {
-//        MappingJacksonHttpMessageConverter mappingJacksonHttpMessageConverter = new MappingJacksonHttpMessageConverter();
-//        mappingJacksonHttpMessageConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text/html;charset=UTF-8")));
-//        return mappingJacksonHttpMessageConverter;
-//    }
 
     @Bean
     public TemplateResolver templateResolver() {

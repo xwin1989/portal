@@ -7,7 +7,7 @@
         </layout>
     </appender>
 
-    <logger name="com.nx.config.web.AccessFilter" level="INFO" additivity="false">
+    <logger name="com.nx.config.filters.AccessFilter" level="INFO" additivity="false">
         <appender-ref ref="stdout" />
     </logger>
 

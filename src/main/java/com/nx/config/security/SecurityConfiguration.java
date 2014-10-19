@@ -1,6 +1,8 @@
 package com.nx.config.security;
 
-import com.nx.config.web.AccessFilter;
+import com.nx.config.filters.AccessFilter;
+import com.nx.config.filters.FormAuthenticationCaptchaFilter;
+import com.nx.config.filters.JCaptchaFilter;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler;
 import org.apache.shiro.session.mgt.SessionValidationScheduler;
@@ -9,6 +11,7 @@ import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
@@ -19,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,12 +31,6 @@ import java.util.Map;
  */
 @Configuration
 public class SecurityConfiguration {
-
-//    @Bean
-//    public DefaultPasswordService defaultPasswordService() {
-//        DefaultPasswordService defaultPasswordService = new DefaultPasswordService();
-//        return defaultPasswordService;
-//    }
 
     @Bean
     public EhCacheManager cacheManager() {
@@ -44,7 +42,8 @@ public class SecurityConfiguration {
     @Bean
     public RetryLimitHashedCredentialsMatcher credentialsMatcher() {
         RetryLimitHashedCredentialsMatcher matcher = new RetryLimitHashedCredentialsMatcher(cacheManager());
-        matcher.setHashAlgorithmName("md5");
+        matcher.setHashAlgorithmName("MD5");
+        matcher.setHashIterations(1);
         matcher.setStoredCredentialsHexEncoded(true);
         return matcher;
     }
@@ -52,7 +51,7 @@ public class SecurityConfiguration {
     @Bean
     public CustomSecurityRealm customSecurityRealm() {
         CustomSecurityRealm customSecurityRealm = new CustomSecurityRealm();
-//        customSecurityRealm.setCredentialsMatcher(credentialsMatcher());
+        customSecurityRealm.setCredentialsMatcher(credentialsMatcher());
         customSecurityRealm.setCachingEnabled(true);
         customSecurityRealm.setAuthenticationCachingEnabled(true);
         customSecurityRealm.setAuthenticationCacheName("authenticationCache");
@@ -73,8 +72,24 @@ public class SecurityConfiguration {
     public SimpleCookie sessionIdCookie() {
         SimpleCookie simpleCookie = new SimpleCookie("sid");
         simpleCookie.setHttpOnly(true);
-        simpleCookie.setMaxAge(180000);
+        simpleCookie.setMaxAge(-1);
         return simpleCookie;
+    }
+
+    @Bean
+    public SimpleCookie rememberMeCookie() {
+        SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
+        simpleCookie.setHttpOnly(true);
+        simpleCookie.setMaxAge(2592000);
+        return simpleCookie;
+    }
+
+    @Bean
+    public CookieRememberMeManager rememberMeManager() {
+        CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
+        rememberMeManager.setCipherKey(org.apache.shiro.codec.Base64.decode("4AvVhmFLUs0KTA3Kprsdag=="));
+        rememberMeManager.setCookie(rememberMeCookie());
+        return rememberMeManager;
     }
 
     @Bean
@@ -99,7 +114,7 @@ public class SecurityConfiguration {
         sessionManager.setGlobalSessionTimeout(1800000);
         sessionManager.setDeleteInvalidSessions(true);
 
-        ((ExecutorServiceSessionValidationScheduler)sessionManager.getSessionValidationScheduler()).setSessionManager(sessionManager);
+        ((ExecutorServiceSessionValidationScheduler) sessionManager.getSessionValidationScheduler()).setSessionManager(sessionManager);
         return sessionManager;
     }
 
@@ -109,6 +124,7 @@ public class SecurityConfiguration {
         securityManager.setRealm(customSecurityRealm());
         securityManager.setCacheManager(cacheManager());
         securityManager.setSessionManager(sessionManager());
+        securityManager.setRememberMeManager(rememberMeManager());
         return securityManager;
     }
 
@@ -139,6 +155,11 @@ public class SecurityConfiguration {
         return authorizationAttributeSourceAdvisor;
     }
 
+    @Bean(name = "jCaptchaFilter")
+    public Filter jCaptchaFilter() {
+        return new JCaptchaFilter();
+    }
+
     @Bean(name = "shiroFilterBean")
     public ShiroFilterFactoryBean shiroFilterBean() {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
@@ -148,10 +169,26 @@ public class SecurityConfiguration {
         shiroFilter.setUnauthorizedUrl("/unauthorized");
 
         //Custom Filter
-        shiroFilter.getFilters().put("accessFilter", new AccessFilter());
+        addCustomFilters(shiroFilter);
 
         //Definitions
+        setDefinitions(shiroFilter);
+
+        return shiroFilter;
+    }
+
+    private void addCustomFilters(ShiroFilterFactoryBean shiroFilter) {
+        shiroFilter.getFilters().put("accessFilter", new AccessFilter());
+
+        FormAuthenticationCaptchaFilter formAuthenticationCaptchaFilter = new FormAuthenticationCaptchaFilter();
+        formAuthenticationCaptchaFilter.setCaptchaParam("jCaptcha");
+        shiroFilter.getFilters().put("authc", formAuthenticationCaptchaFilter);
+
+    }
+
+    private void setDefinitions(ShiroFilterFactoryBean shiroFilter) {
         Map<String, String> definitionsMap = new HashMap<>();
+        definitionsMap.put(FormAuthenticationCaptchaFilter.DEFAULT_CAPTCHA_URL, "anon");
         definitionsMap.put("/login", "authc");
         definitionsMap.put("/unauthorized", "anon");
         definitionsMap.put("/logout", "logout");
@@ -159,10 +196,7 @@ public class SecurityConfiguration {
 
         //If need config path , must add accessFilter
 //        definitionsMap.put("/message/**", "accessFilter,authc");
-        definitionsMap.put("/**", "accessFilter,authc");
+        definitionsMap.put("/**", "accessFilter,user");
         shiroFilter.setFilterChainDefinitionMap(definitionsMap);
-
-
-        return shiroFilter;
     }
 }

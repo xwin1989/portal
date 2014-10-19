@@ -1,5 +1,6 @@
 package com.nx.config;
 
+import com.nx.config.filters.JCaptchaFilter;
 import com.nx.config.security.SecurityConfiguration;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -36,10 +37,17 @@ public class WebApplicationInitializer implements org.springframework.web.WebApp
         dispatcher.addMapping("/");
 
         // Register shiro filter
+
         DelegatingFilterProxy shiroFilter = new DelegatingFilterProxy("shiroFilterBean", dispatcherContext);
         shiroFilter.setTargetFilterLifecycle(true);
         container.addFilter("shiroFilter", shiroFilter).addMappingForUrlPatterns(null, false, "/*");
 
+//        DelegatingFilterProxy jCaptchaFilter = new DelegatingFilterProxy("jCaptchaFilter", dispatcherContext);
+//        shiroFilter.setTargetFilterLifecycle(true);
+//        container.addFilter("jCaptchaFilter", jCaptchaFilter).addMappingForUrlPatterns(null, false, "/captchaImg*");
+
+
+        container.addFilter("jCaptchaFilter", JCaptchaFilter.class).addMappingForUrlPatterns(null, false, "/captchaImg");
         // Add other listener
 //        container.addListener(new SessionListener());
     }

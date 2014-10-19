@@ -1,7 +1,10 @@
 package com.nx.config.security;
 
+import com.nx.config.exceptions.CaptchaException;
+import com.nx.config.filters.JCaptchaFilter;
 import com.nx.domain.security.User;
 import com.nx.service.UserService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -21,10 +24,10 @@ public class CustomSecurityRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        Set roles = new HashSet<>();
+        Set<String> roles = new HashSet<>();
         Set<String> permissions = new HashSet<>();
         roles.add("admin");
-        permissions.add("/message/*");
+        permissions.add("message");
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roles);
@@ -34,27 +37,50 @@ public class CustomSecurityRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        UsernamePasswordCaptchaToken token = (UsernamePasswordCaptchaToken) authenticationToken;
+
+        String captcha = token.getCaptcha();
+        String exitCode = SecurityUtils.getSubject().getSession().getAttribute(JCaptchaFilter.KEY_CAPTCHA).toString();
+        if (null == captcha || !captcha.equalsIgnoreCase(exitCode)) {
+            throw new CaptchaException("captcha error");
+        }
         User user;
         try {
             user = userService.findByName(token.getUsername());
             if (user == null) {
-                throw new UnknownAccountException();
+                throw new UnknownAccountException("account not exist");
             }
         } catch (Exception e) {
             throw new UnknownAccountException();
         }
-        if (user != null && user.getPassword().equals(new String(token.getPassword()))) {
-            SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                    user.getName(),
-                    user.getPassword(),
-                    ByteSource.Util.bytes(user.getSalt()),//salt=username+salt
-                    getName()  //realm name
-            );
-            return authenticationInfo;
-        } else {
-            throw new AuthenticationException("Invalid username/password combination!");
-        }
+
+
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
+                user.getName(),
+                user.getPassword(),
+                ByteSource.Util.bytes(user.getSalt()),//salt=username+salt
+                getName()  //realm name
+        );
+        return authenticationInfo;
+    }
+
+    @Override
+    protected void clearCache(PrincipalCollection principals) {
+        super.clearCache(principals);
+    }
+
+    public void clearAllCachedAuthorizationInfo() {
+        getAuthorizationCache().clear();
+    }
+
+    public void clearAllCachedAuthenticationInfo() {
+        getAuthenticationCache().clear();
+    }
+
+    public void clearAllAuthCache() {
+        clearAllCachedAuthorizationInfo();
+        clearAllCachedAuthenticationInfo();
+
     }
 
     @Autowired

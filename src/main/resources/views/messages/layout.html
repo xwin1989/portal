@@ -97,12 +97,15 @@
 
                             <p class="navbar-text pull-right">
                                 <shiro:principal/>
+                                <shiro:notAuthenticated>
+                                    (Remember)
+                                </shiro:notAuthenticated>
                             </p>
                         </shiro:user>
                     </div>
                     <ul class="nav">
                         <li><a th:href="@{/}">Inbox</a></li>
-                        <li><a th:href="@{/(form)}">Compose</a></li>
+                        <li><a th:href="@{/message}">Message</a></li>
                     </ul>
                 </div>
             </div>
