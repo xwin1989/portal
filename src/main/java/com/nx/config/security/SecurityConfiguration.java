@@ -1,9 +1,11 @@
 package com.nx.config.security;
 
+import com.nx.config.cache.SpringCacheManagerWrapper;
 import com.nx.config.filters.AccessFilter;
 import com.nx.config.filters.FormAuthenticationCaptchaFilter;
 import com.nx.config.filters.JCaptchaFilter;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
+import com.nx.config.web.WebSessionManager;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler;
 import org.apache.shiro.session.mgt.SessionValidationScheduler;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
@@ -18,9 +20,12 @@ import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.io.PathResource;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -32,11 +37,24 @@ import java.util.Map;
 @Configuration
 public class SecurityConfiguration {
 
+
     @Bean
-    public EhCacheManager cacheManager() {
-        EhCacheManager cacheManager = new EhCacheManager();
-        cacheManager.setCacheManagerConfigFile("classpath:ehcache.xml");
-        return cacheManager;
+    public net.sf.ehcache.CacheManager ehcacheManager() {
+        EhCacheManagerFactoryBean factoryBean = new EhCacheManagerFactoryBean();
+        factoryBean.setConfigLocation(new PathResource("/ehcache.xml"));
+        factoryBean.setShared(true);
+        return factoryBean.getObject();
+    }
+
+    @Bean
+    public EhCacheCacheManager springCacheManager() {
+        return new EhCacheCacheManager(ehcacheManager());
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        SpringCacheManagerWrapper springCacheManagerWrapper = new SpringCacheManagerWrapper(springCacheManager());
+        return springCacheManagerWrapper;
     }
 
     @Bean
@@ -101,7 +119,7 @@ public class SecurityConfiguration {
 
     @Bean
     public DefaultWebSessionManager sessionManager() {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        WebSessionManager sessionManager = new WebSessionManager();
         sessionManager.setSessionDAO(sessionDAO());
 
         sessionManager.setSessionValidationSchedulerEnabled(true);

@@ -1,6 +1,7 @@
 package com.nx.repositories;
 
 import com.nx.domain.security.User;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

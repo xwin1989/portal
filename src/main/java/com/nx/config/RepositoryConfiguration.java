@@ -21,7 +21,7 @@ import java.util.Properties;
  * Created by Neal on 2014-09-28.
  */
 @Configuration
-@ComponentScan("com.nx.service")
+@ComponentScan(basePackages = {"com.nx.service"})
 @EnableJpaRepositories("com.nx.repositories")
 //@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class RepositoryConfiguration {

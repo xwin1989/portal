@@ -1,5 +1,6 @@
 package com.nx.config;
 
+import com.nx.config.cache.EhCacheConfig;
 import com.nx.config.filters.JCaptchaFilter;
 import com.nx.config.security.SecurityConfiguration;
 import org.springframework.web.context.ContextLoaderListener;
