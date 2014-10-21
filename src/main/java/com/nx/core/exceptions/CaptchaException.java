@@ -1,4 +1,4 @@
-package com.nx.config.exceptions;
+package com.nx.core.exceptions;
 
 import org.apache.shiro.authc.AuthenticationException;
 

@@ -1,4 +1,4 @@
-package com.nx.config;
+package com.nx.core;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +22,7 @@ import java.util.Properties;
  */
 @Configuration
 @ComponentScan(basePackages = {"com.nx.service"})
-@EnableJpaRepositories("com.nx.repositories")
-//@EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableJpaRepositories(basePackages = {"com.nx.repositories"})
 public class RepositoryConfiguration {
 
     @Bean
@@ -33,8 +32,6 @@ public class RepositoryConfiguration {
         druidDataSource.setUrl("jdbc:hsqldb:mem:testDB");
         druidDataSource.setUsername("sa");
         return druidDataSource;
-//        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-//        return builder.setType(EmbeddedDatabaseType.HSQL).build();
     }
 
     @Bean

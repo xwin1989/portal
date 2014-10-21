@@ -1,9 +1,8 @@
-package com.nx.config;
+package com.nx.core;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -29,7 +28,7 @@ import org.thymeleaf.templateresolver.TemplateResolver;
  */
 @Configurable
 @EnableWebMvc
-@ComponentScan("com.nx.controller")
+@ComponentScan(basePackages = {"com.nx.web.controller","com.nx.core.web.controller"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
@@ -90,7 +89,7 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver(){
+    public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver() {
         return new ExceptionHandlerExceptionResolver();
     }
 

@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<ehcache xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+<ehcache xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
 
     <!-- Sets the path to the directory where cache .data files are created.
 
@@ -92,7 +93,7 @@
            statistics="true">
     </cache>
 
-    <cache name="userCache" maxElementsInMemory="10" eternal="true" overflowToDisk="false" />
+    <cache name="userCache" maxElementsInMemory="10" eternal="true" overflowToDisk="false"/>
 
 </ehcache>
 

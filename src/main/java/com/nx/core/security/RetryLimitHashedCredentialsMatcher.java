@@ -1,4 +1,4 @@
-package com.nx.config.security;
+package com.nx.core.security;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;

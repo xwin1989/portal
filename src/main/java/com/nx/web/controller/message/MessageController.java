@@ -1,4 +1,4 @@
-package com.nx.controller.message;
+package com.nx.web.controller.message;
 
 /**
  * Created by Neal on 2014-10-08.
@@ -39,7 +39,7 @@ public class MessageController {
         return new ModelAndView("messages/inbox", "messages", messages);
     }
 
-    @RequiresPermissions(logical = Logical.AND,value = "message")
+    @RequiresPermissions(logical = Logical.AND, value = "message")
     @RequestMapping("{id}")
     public ModelAndView view(@PathVariable("id") Message message) throws UnauthenticatedException {
         if (!SecurityUtils.getSubject().hasRole("user")) {

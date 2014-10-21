@@ -1,4 +1,4 @@
-package com.nx.config.filters;
+package com.nx.core.filters;
 
 import org.apache.shiro.web.servlet.OncePerRequestFilter;
 import org.apache.shiro.web.util.WebUtils;

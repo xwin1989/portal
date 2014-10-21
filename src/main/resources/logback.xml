@@ -7,11 +7,11 @@
         </layout>
     </appender>
 
-    <logger name="com.nx.config.filters.AccessFilter" level="INFO" additivity="false">
-        <appender-ref ref="stdout" />
+    <logger name="com.nx.core.filters.AccessFilter" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="stdout" />
+        <appender-ref ref="stdout"/>
     </root>
 </configuration>

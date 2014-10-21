@@ -1,4 +1,4 @@
-package com.nx.config.utils;
+package com.nx.core.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,13 +25,25 @@ public class CaptchaUtil {
     private int lineNum = 50;// 干扰线数量
     private int strNum = 4;// 随机产生字符数量
 
+    public static void main(String[] args) {
+        CaptchaUtil tool = new CaptchaUtil();
+        StringBuffer code = new StringBuffer();
+        BufferedImage image = tool.genRandomCodeImage(code);
+        System.out.println(">>> random code =: " + code);
+        try {
+            // 将内存中的图片通过流动形式输出到客户端
+            ImageIO.write(image, "JPEG", new FileOutputStream(new File("random-code.jpg")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 生成随机图片
      */
     public BufferedImage genRandomCodeImage(StringBuffer randomCode) {
         // BufferedImage类是具有缓冲区的Image类
-        BufferedImage image = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_BGR);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
         // 获取Graphics对象,便于对图像进行各种绘制操作
         Graphics g = image.getGraphics();
         // 设置背景色
@@ -58,10 +70,8 @@ public class CaptchaUtil {
      * 给定范围获得随机颜色
      */
     private Color getRandColor(int fc, int bc) {
-        if (fc > 255)
-            fc = 255;
-        if (bc > 255)
-            bc = 255;
+        if (fc > 255) fc = 255;
+        if (bc > 255) bc = 255;
         int r = fc + random.nextInt(bc - fc);
         int g = fc + random.nextInt(bc - fc);
         int b = fc + random.nextInt(bc - fc);
@@ -72,10 +82,8 @@ public class CaptchaUtil {
      * 绘制字符串
      */
     private String drowString(Graphics g, int i) {
-        g.setColor(new Color(random.nextInt(101), random.nextInt(111), random
-                .nextInt(121)));
-        String rand = String.valueOf(getRandomString(random.nextInt(RANDOM_STRS
-                .length())));
+        g.setColor(new Color(random.nextInt(101), random.nextInt(111), random.nextInt(121)));
+        String rand = String.valueOf(getRandomString(random.nextInt(RANDOM_STRS.length())));
         g.translate(random.nextInt(3), random.nextInt(3));
         g.drawString(rand, 13 * i, 16);
         return rand;
@@ -97,20 +105,5 @@ public class CaptchaUtil {
      */
     private String getRandomString(int num) {
         return String.valueOf(RANDOM_STRS.charAt(num));
-    }
-
-    public static void main(String[] args) {
-        CaptchaUtil tool = new CaptchaUtil();
-        StringBuffer code = new StringBuffer();
-        BufferedImage image = tool.genRandomCodeImage(code);
-        System.out.println(">>> random code =: " + code);
-        try {
-            // 将内存中的图片通过流动形式输出到客户端
-            ImageIO.write(image, "JPEG", new FileOutputStream(new File(
-                    "random-code.jpg")));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }

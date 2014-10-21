@@ -1,8 +1,6 @@
-package com.nx.config;
+package com.nx.core;
 
-import com.nx.config.cache.EhCacheConfig;
-import com.nx.config.filters.JCaptchaFilter;
-import com.nx.config.security.SecurityConfiguration;
+import com.nx.core.filters.JCaptchaFilter;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
@@ -21,7 +19,7 @@ public class WebApplicationInitializer implements org.springframework.web.WebApp
     public void onStartup(ServletContext container) throws ServletException {
         // Create the 'root' Spring application context
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(RepositoryConfiguration.class, SecurityConfiguration.class);
+        rootContext.register(RootConfiguration.class);
 
         // Manage the lifecycle of the root application context
         container.addListener(new ContextLoaderListener(rootContext));
@@ -38,18 +36,11 @@ public class WebApplicationInitializer implements org.springframework.web.WebApp
         dispatcher.addMapping("/");
 
         // Register shiro filter
-
         DelegatingFilterProxy shiroFilter = new DelegatingFilterProxy("shiroFilterBean", dispatcherContext);
         shiroFilter.setTargetFilterLifecycle(true);
         container.addFilter("shiroFilter", shiroFilter).addMappingForUrlPatterns(null, false, "/*");
 
-//        DelegatingFilterProxy jCaptchaFilter = new DelegatingFilterProxy("jCaptchaFilter", dispatcherContext);
-//        shiroFilter.setTargetFilterLifecycle(true);
-//        container.addFilter("jCaptchaFilter", jCaptchaFilter).addMappingForUrlPatterns(null, false, "/captchaImg*");
-
-
+        // Register jCaptcha filter
         container.addFilter("jCaptchaFilter", JCaptchaFilter.class).addMappingForUrlPatterns(null, false, "/captchaImg");
-        // Add other listener
-//        container.addListener(new SessionListener());
     }
 }

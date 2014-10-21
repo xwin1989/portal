@@ -1,7 +1,7 @@
-package com.nx.controller;
+package com.nx.web.controller;
 
-import com.nx.config.exceptions.CaptchaException;
-import com.nx.config.security.CustomSecurityRealm;
+import com.nx.core.exceptions.CaptchaException;
+import com.nx.core.security.CustomSecurityRealm;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +16,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class DefaultController {
-        @RequestMapping("/**")
-        public String notFound() {
-            return "errors/404";
-        }
     private CustomSecurityRealm customSecurityRealm;
+
+    @RequestMapping("/**")
+    public String notFound() {
+        return "errors/404";
+    }
 
     @RequestMapping("/login")
     public String showLoginForm(HttpServletRequest req, Model model) {

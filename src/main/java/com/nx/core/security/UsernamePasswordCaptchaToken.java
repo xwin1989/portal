@@ -1,4 +1,4 @@
-package com.nx.config.security;
+package com.nx.core.security;
 
 import org.apache.shiro.authc.UsernamePasswordToken;
 
@@ -10,7 +10,7 @@ public class UsernamePasswordCaptchaToken extends UsernamePasswordToken {
 
     public UsernamePasswordCaptchaToken(String username, String password, boolean rememberMe, String host, String captcha) {
         super(username, password, rememberMe, host);
-        this.captcha = captcha;
+        setCaptcha(captcha);
     }
 
     public String getCaptcha() {

@@ -1,6 +1,6 @@
-package com.nx.config.filters;
+package com.nx.core.filters;
 
-import com.nx.config.security.UsernamePasswordCaptchaToken;
+import com.nx.core.security.UsernamePasswordCaptchaToken;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -13,9 +13,8 @@ import javax.servlet.ServletResponse;
  */
 public class FormAuthenticationCaptchaFilter extends FormAuthenticationFilter {
     public static final String DEFAULT_CAPTCHA_PARAM = "jCaptcha";
-    public static final String DEFAULT_CAPTCHA_URL = "/captchaImg";
     private String captchaParam = DEFAULT_CAPTCHA_PARAM;
-
+    public static final String DEFAULT_CAPTCHA_URL = "/captchaImg";
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {

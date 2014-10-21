@@ -1,7 +1,7 @@
-package com.nx.config.security;
+package com.nx.core.security;
 
-import com.nx.config.exceptions.CaptchaException;
-import com.nx.config.filters.JCaptchaFilter;
+import com.nx.core.exceptions.CaptchaException;
+import com.nx.core.filters.JCaptchaFilter;
 import com.nx.domain.security.User;
 import com.nx.service.UserService;
 import org.apache.shiro.SecurityUtils;

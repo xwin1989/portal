@@ -1,4 +1,4 @@
-package com.nx.config.web;
+package com.nx.core.web;
 
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.SessionContext;

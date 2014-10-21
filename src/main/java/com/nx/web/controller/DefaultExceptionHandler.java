@@ -1,4 +1,4 @@
-package com.nx.controller;
+package com.nx.web.controller;
 
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;

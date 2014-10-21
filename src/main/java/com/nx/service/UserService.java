@@ -1,10 +1,9 @@
 package com.nx.service;
 
-import com.googlecode.ehcache.annotations.Cacheable;
-import com.googlecode.ehcache.annotations.KeyGenerator;
 import com.nx.domain.security.User;
 import com.nx.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private UserRepository userRepository;
 
-    @Cacheable(cacheName = "userCache",keyGenerator =@KeyGenerator(name = "#{name}") )
+    @Cacheable(key = "userCache", value = "#name")
     public User findByName(String name) {
         return userRepository.findByName(name);
     }

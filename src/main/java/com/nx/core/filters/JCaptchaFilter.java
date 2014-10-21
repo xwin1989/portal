@@ -1,6 +1,6 @@
-package com.nx.config.filters;
+package com.nx.core.filters;
 
-import com.nx.config.utils.CaptchaUtil;
+import com.nx.core.utils.CaptchaUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.web.filter.OncePerRequestFilter;
